@@ -32,8 +32,12 @@ async def on_message(msg):
     if msg.content.startswith('$hello'):
         await msg.channel.send('Hello!')
 
-    if random.randint(0,100) <= 10:
-        await msg.channel.send(scopebook[random.randint(0,len(scopebook))])
+    if msg.content.startswith('!scope'):
+        await msg.channel.send(scopebook[random.randint(0,len(scopebook)-1)])
+    elif random.randint(0,100) <= 10:
+        await msg.channel.send(scopebook[random.randint(0,len(scopebook)-1)])
+
+    
 
 print('Bot online')
 client.run(token)
