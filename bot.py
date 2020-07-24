@@ -1,7 +1,14 @@
 # Perm Int: 3406912
 import discord
 import random
-import config
+
+import os
+token = ''
+if os.environ.get('HOSTED') == None:
+    import config
+    token = config.token
+else:
+    token = str(os.environ.get('HOSTED'))
 
 keywords = {
     ""
@@ -23,4 +30,4 @@ async def on_message(msg):
     if random.randint(0,100) <= 10:
         await msg.channel.send('**- SCOPE -**')
 
-client.run(config.token)
+client.run(token)
