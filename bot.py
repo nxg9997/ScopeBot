@@ -9,6 +9,7 @@ if os.environ.get('HOSTED') == None:
     token = config.token
 else:
     token = str(os.environ.get('HOSTED'))
+    print('Running on Heroku, token = ' + token)
 
 keywords = {
     ""
@@ -30,4 +31,5 @@ async def on_message(msg):
     if random.randint(0,100) <= 10:
         await msg.channel.send('**- SCOPE -**')
 
+print('Bot online')
 client.run(token)
