@@ -12,9 +12,12 @@ else:
     token = str(os.environ.get('HOSTED'))
     print('Running on Heroku, token = ' + token)
 
-keywords = {
-    ""
-}
+scopebook = [
+    "**- SCOPE -**",
+    "*But have you considered... scope?*",
+    "I like your idea, but, it's a little outside the scope 乁| ･ 〰 ･ |ㄏ",
+    "https://pmweb.com/wordpress/wp-content/uploads/2017/12/Scope-blog-Joao.jpg"
+]
 
 client = discord.Client()
 
@@ -30,7 +33,7 @@ async def on_message(msg):
         await msg.channel.send('Hello!')
 
     if random.randint(0,100) <= 10:
-        await msg.channel.send('**- SCOPE -**')
+        await msg.channel.send(scopebook[random.randint(0,len(scopebook))])
 
 print('Bot online')
 client.run(token)
