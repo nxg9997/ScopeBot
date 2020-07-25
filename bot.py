@@ -29,6 +29,13 @@ def GetQuote(usr):
     quote = quote.replace('$','<@' + str(usr) + '>')
     return quote
 
+# Check if a message contains a keyword
+def ContainsKeyword(msg):
+    if any(map(msg.content.lower().__contains__,data.keywords)):
+        return True
+    
+    return False
+
 # Discord Events
 
 # When the bot is successfully logged in
@@ -57,7 +64,7 @@ async def on_message(msg):
     # send a scope reminder (by using a command, random chance, or by containing a keyword)
     if msg.content.startswith('!scope'):
         await msg.channel.send(GetQuote(msg.author.id))
-    elif (random.randint(0,100) <= 5 or any(map(msg.content.__contains__,data.keywords))) and data.cooldowns[str(msg.channel.id)] == 0:
+    elif (random.randint(0,100) <= 5 or ContainsKeyword(msg)) and data.cooldowns[str(msg.channel.id)] == 0:
         data.cooldowns[str(msg.channel.id)] = 10
         await msg.channel.send(GetQuote(msg.author.id))
 
