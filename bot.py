@@ -1,5 +1,4 @@
 # Perm Int: 3406912
-print('hello world')
 import discord
 import random
 
