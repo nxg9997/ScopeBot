@@ -54,9 +54,11 @@ scopebook = [
     "Oh no, it happened again. Keep on trying, don’t let it get to you. Try and stay in scope.",
     "Oof, your idea is out of scope. That’s a deep frustration, a real punch in the gut.",
     "You open the mailbox. Inside the mailbox is a leaflet. It reads \"**SCOPE.**\"",
-    "\"Don't hate the scope hate the violation of scope.\" - Ice T",
-    "\"Oh, they're going out of scope? We can't handle that. Kill the character if they try it.\" - Corey and Lori Ann Cole",
-    "\"v 0.47.02 - Fixed crash involving stressed out wilderness creatures wanting to complain to priests when you're out of scope\" - Tarn Adams"
+    "\"Oh, they're going out of scope? We can't handle that. Kill the character if they try it.\" - !Corey and Lori Ann Cole",
+    "\"v 0.47.02 - Fixed crash involving stressed out wilderness creatures wanting to complain to priests when you're out of scope\" - !Tarn Adams",
+    "\"The trouble is, I have no idea how to answer this question.  I'm not really afraid of genetic technology, atomic weapons or killer robots.  I'm afraid of inflated scope.\" - !Ken Levine",
+    "\"I **had** to kill somebody in the intro.  It's a basic part of managing scope.\" - !Frank Mentzer",
+    "\"This game requires exactly 18 lines of text.  I don't think I've ever agonised over scope so much before.\" - !Terry Cavanagh"
 ]
 
 # channel cooldowns
