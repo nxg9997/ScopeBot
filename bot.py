@@ -78,7 +78,7 @@ async def on_message(msg):
     elif (random.randint(0,100) <= 5 or ContainsKeyword(msg)) and data.cooldowns[str(msg.channel.id)] == 0:
         data.cooldowns[str(msg.channel.id)] = 10
 
-        await msg.channel.send(GetQuote(msg.author.id) + " \n " + GetTotalString(msg.author.id))
+        await msg.channel.send(GetQuote(msg.author.id) + "\n" + GetTotalString(msg.author.id))
 
         # reserved spot for some dank memes
         '''
