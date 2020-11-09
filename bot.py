@@ -25,7 +25,7 @@ client = discord.Client()
 
 # Add user to scope counter OR increment their total
 def IncrementUser(usr):
-    if not user in data.scopecounter:
+    if not usr in data.scopecounter:
         data.scopecounter[usr] = 0
     data.scopecounter[usr] = data.scopecounter[usr] + 1
 
