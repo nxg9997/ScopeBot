@@ -63,3 +63,6 @@ scopebook = [
 
 # channel cooldowns
 cooldowns = {}
+
+# per user scope counter
+scopecounter = {}

@@ -23,6 +23,16 @@ client = discord.Client()
 
 # Helper functions
 
+# Add user to scope counter OR increment their total
+def IncrementUser(usr):
+    if user in data.scopecounter:
+        data.scopecounter[usr] = 0
+    data.scopecounter[usr] = data.scopecounter[usr] + 1
+
+# Gets a string with the user's total number of out of scope ideas
+def GetTotalString(usr):
+    return "( <@" + str(usr) + "> has had " + data.scopecounter[usr] + " badly scoped ideas!"
+
 # Retrieves a quote, and will @ the user if supported by the quote
 def GetQuote(usr):
     quote = data.scopebook[random.randint(0,len(data.scopebook)-1)]
@@ -66,7 +76,16 @@ async def on_message(msg):
         await msg.channel.send(GetQuote(msg.author.id))
     elif (random.randint(0,100) <= 5 or ContainsKeyword(msg)) and data.cooldowns[str(msg.channel.id)] == 0:
         data.cooldowns[str(msg.channel.id)] = 10
-        await msg.channel.send(GetQuote(msg.author.id))
+
+        await msg.channel.send(GetQuote(msg.author.id) + " : " + GetTotalString(msg.author.id))
+
+        # reserved spot for some dank memes
+        '''
+        if random.randint(0, 100) <= 42:
+            await msg.channel.send(GetQuote(msg.author.id))
+        else:
+            await msg.channel.send(GetQuote(msg.author.id))
+        '''
 
     
 # run the bot
