@@ -32,7 +32,7 @@ def IncrementUser(usr):
 # Gets a string with the user's total number of out of scope ideas
 def GetTotalString(usr):
     IncrementUser(usr)
-    return "**<@" + str(usr) + "> has had " + str(data.scopecounter[usr]) + " badly scoped ideas!**"
+    return "**<@" + str(usr) + "> has had " + str(data.scopecounter[usr]) + " badly scoped idea(s)!**"
 
 # Retrieves a quote, and will @ the user if supported by the quote
 def GetQuote(usr):
