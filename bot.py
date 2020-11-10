@@ -6,14 +6,19 @@ import random
 
 import os
 
+import mysql.connector
+
 # Only import Config.py if the bot is being run locally
 # 'HOSTED' is a environment variable set on Heroku that equals the bot token
 token = ''
+sql_conn_info = {}
 if os.environ.get('HOSTED') == None:
     import config
     token = config.token
+    sql_conn_info = config.sql_data
 else:
     token = str(os.environ.get('HOSTED'))
+    #sqlurl = str(os.environ.get('JAWSDB_URL'))
     print('Running on Heroku, token = ' + token)
 
 import data
@@ -21,7 +26,22 @@ import data
 # create a Discord client instance
 client = discord.Client()
 
+# connect to MySQL
+db_connection = mysql.connector.connect(
+    host=sql_conn_info['host'],
+    user=sql_conn_info['username'],
+    passwd=sql_conn_info['password']
+)
+
+
 # Helper functions
+def ReadCountFromDB(usr):
+    db_cursor = db_connection.cursor()
+    query = "select `count` from `" + sql_conn_info['database'] + "`.`Counter` where `user`='" + str(usr) + "' limit 1"
+    print(query)
+    db_cursor.execute(query)
+    for db in db_cursor:
+        print(db)
 
 # Add user to scope counter OR increment their total
 def IncrementUser(usr):
@@ -71,6 +91,10 @@ async def on_message(msg):
     # 'hello' ping
     if msg.content.startswith('$hello'):
         await msg.channel.send('Hello!')
+
+    if msg.content.startswith('!mycount'):
+        ReadCountFromDB(msg.author.id)
+        await msg.channel.send("check bot logs for output")
 
     # send a scope reminder (by using a command, random chance, or by containing a keyword)
     if msg.content.startswith('!scope'):
