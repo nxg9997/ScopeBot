@@ -20,6 +20,11 @@ else:
     token = str(os.environ.get('HOSTED'))
     #sqlurl = str(os.environ.get('JAWSDB_URL'))
     print('Running on Heroku, token = ' + token)
+    sql_conn_info['host'] = str(os.environ.get('DB_HOST'))
+    sql_conn_info['username'] = str(os.environ.get('DB_USER'))
+    sql_conn_info['password'] = str(os.environ.get('DB_PASS'))
+    sql_conn_info['database'] = str(os.environ.get('DB_DB'))
+    sql_conn_info['port'] = str(os.environ.get('DB_PORT'))
 
 import data
 
@@ -38,21 +43,41 @@ db_connection = mysql.connector.connect(
 def ReadCountFromDB(usr):
     db_cursor = db_connection.cursor()
     query = "select `count` from `" + sql_conn_info['database'] + "`.`Counter` where `user`='" + str(usr) + "' limit 1"
-    print(query)
+    #print(query)
     db_cursor.execute(query)
+    found = False
     for db in db_cursor:
-        print(db)
+        found = True
+        #print(db)
+        return str(db[0])
+    if not found:
+        query = "insert into `" + sql_conn_info['database'] + "`.`Counter` (`user`) values ('" + str(usr) + "')"
+        db_cursor.execute(query)
+        db_connection.commit()
+        #print(query)
+        #print(db_cursor.Info())
+        return "0"
+    return "-1"
 
 # Add user to scope counter OR increment their total
 def IncrementUser(usr):
+    result = int(ReadCountFromDB(usr))
+    result = result + 1
+    db_cursor = db_connection.cursor()
+    query = "update `" + sql_conn_info['database'] + "`.`Counter` set `count` = " + str(result) + " where `user` = '" + str(usr) + "'"
+    #print(query)
+    db_cursor.execute(query)
+    db_connection.commit()
+    '''
     if not usr in data.scopecounter:
         data.scopecounter[usr] = 0
     data.scopecounter[usr] = data.scopecounter[usr] + 1
+    '''
 
 # Gets a string with the user's total number of out of scope ideas
 def GetTotalString(usr):
     IncrementUser(usr)
-    return "**<@" + str(usr) + "> has had " + str(data.scopecounter[usr]) + " badly scoped idea(s)!**"
+    return "**<@" + str(usr) + "> has had " + ReadCountFromDB(usr) + " badly scoped idea(s)!**"
 
 # Retrieves a quote, and will @ the user if supported by the quote
 def GetQuote(usr):
@@ -92,25 +117,41 @@ async def on_message(msg):
     if msg.content.startswith('$hello'):
         await msg.channel.send('Hello!')
 
-    if msg.content.startswith('!mycount'):
-        ReadCountFromDB(msg.author.id)
-        await msg.channel.send("check bot logs for output")
+    elif msg.content.startswith('!mycount'):
+        count = ReadCountFromDB(msg.author.id)
+        await msg.channel.send("<@" + str(msg.author.id) + "> **has had " + str(count) + " out-of-scope ideas!**")
 
-    # send a scope reminder (by using a command, random chance, or by containing a keyword)
-    if msg.content.startswith('!scope'):
-        await msg.channel.send(GetQuote(msg.author.id))
-    elif (random.randint(0,100) <= 5 or ContainsKeyword(msg)) and data.cooldowns[str(msg.channel.id)] == 0:
-        data.cooldowns[str(msg.channel.id)] = 10
-
-        await msg.channel.send(GetQuote(msg.author.id) + "\n" + GetTotalString(msg.author.id))
-
-        # reserved spot for some dank memes
         '''
-        if random.randint(0, 100) <= 42:
-            await msg.channel.send(GetQuote(msg.author.id))
-        else:
-            await msg.channel.send(GetQuote(msg.author.id))
+        elif msg.content.startswith('!incme'):
+            IncrementUser(msg.author.id)
+            await msg.channel.send("done")
         '''
+    # tells the user how many out-of-scope counts each mentioned user has
+    elif msg.content.startswith('!countfor'):
+        counts = []
+        result = "**Out-of-scope count(s):"
+        for mention in msg.mentions:
+            #counts.append(ReadCountFromDB(mention.id))
+            result = result + " <@" + str(mention.id) + "> has " + ReadCountFromDB(mention.id) + ","
+        result = result[0:len(result) - 1] + "**"
+        await msg.channel.send(result)
+
+    else:
+        # send a scope reminder (by using a command, random chance, or by containing a keyword)
+        if msg.content.startswith('!scope'):
+            await msg.channel.send(GetQuote(msg.author.id))
+        elif (random.randint(0,100) <= 5 or ContainsKeyword(msg)) and data.cooldowns[str(msg.channel.id)] == 0:
+            data.cooldowns[str(msg.channel.id)] = 10
+
+            await msg.channel.send(GetQuote(msg.author.id) + "\n" + GetTotalString(msg.author.id))
+
+            # reserved spot for some dank memes
+            '''
+            if random.randint(0, 100) <= 42:
+                await msg.channel.send(GetQuote(msg.author.id))
+            else:
+                await msg.channel.send(GetQuote(msg.author.id))
+            '''
 
     
 # run the bot
