@@ -57,6 +57,7 @@ def ReadCountFromDB(usr):
         #print(query)
         #print(db_cursor.Info())
         return "0"
+    db_cursor.close()
     return "-1"
 
 # Add user to scope counter OR increment their total
@@ -68,6 +69,7 @@ def IncrementUser(usr):
     #print(query)
     db_cursor.execute(query)
     db_connection.commit()
+    db_cursor.close()
     '''
     if not usr in data.scopecounter:
         data.scopecounter[usr] = 0
