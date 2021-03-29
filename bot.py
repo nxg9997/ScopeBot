@@ -8,6 +8,8 @@ import os
 
 import mysql.connector
 
+import numpy as np
+
 # Only import Config.py if the bot is being run locally
 # 'HOSTED' is a environment variable set on Heroku that equals the bot token
 token = ''
@@ -94,6 +96,38 @@ def ContainsKeyword(msg):
     
     return False
 
+def Scoreboard():
+    result = '```diff\nScoreboard\n=====\n'
+    db_cursor = db_connection.cursor()
+    query = "select * from `" + sql_conn_info['database'] + "`.`Counter`"
+    #print(query)
+    db_cursor.execute(query)
+    size = 0
+    db_res = []
+    for db in db_cursor:
+        size += 1
+        db_res.append([db[0],db[1]])
+    arr = np.zeros(shape=(size,2))
+    #ptr = 0
+    for x in range(len(db_res)):
+        #print(db[0])
+        arr[x, 0] = int(db_res[x][0])
+        arr[x, 1] = int(db_res[x][1])
+        #ptr += 1
+
+    #arr[0,0] = 1
+    db_cursor.close()
+    print(arr)
+    sortedArr = arr[arr[:,1].argsort()]
+
+    print(sortedArr)
+    for x in range(size):
+        result += "<@" + str(f"{sortedArr[x][0]:8f}")[0:-7] + "> : " + str(sortedArr[x][1]) + '\n'
+    return result
+
+
+
+
 # Discord Events
 
 # When the bot is successfully logged in
@@ -137,6 +171,8 @@ async def on_message(msg):
             result = result + " <@" + str(mention.id) + "> has " + ReadCountFromDB(mention.id) + ","
         result = result[0:len(result) - 1] + "**"
         await msg.channel.send(result)
+    elif msg.content.startswith('!scoreboard'):
+        await msg.channel.send(Scoreboard())
 
     else:
         # send a scope reminder (by using a command, random chance, or by containing a keyword)
